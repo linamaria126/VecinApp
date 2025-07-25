@@ -13,3 +13,9 @@ class Division(models.Model):
 
     def __str__(self):
         return self.nombre_division
+    
+    class Meta:
+        db_table = 'division'
+        verbose_name = 'Division'
+        verbose_name_plural = 'Divisiones'
+        ordering = ['id']

@@ -28,3 +28,8 @@ class Unidad(models.Model):
 
     def __str__(self):
         return self.nombre
+    class Meta:
+        db_table = 'unidad'
+        verbose_name = 'Unidad'
+        verbose_name_plural = 'Unidades'
+        ordering = ['id']

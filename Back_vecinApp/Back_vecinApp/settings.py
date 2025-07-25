@@ -12,8 +12,11 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 
-get_env = os.environ.get
+load_dotenv()
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -41,6 +44,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'unidades',
+    'vehiculos',
+    'usuarios',
+    'reservas',
+    'mascotas',
+    'parqueaderos',
+    'publicaciones',
 ]
 
 MIDDLEWARE = [
@@ -80,11 +89,11 @@ WSGI_APPLICATION = 'Back_vecinApp.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': get_env('DBNAME'),
-        'USER': get_env('USER'),
-        'PASSWORD': get_env('PASSWORD'),
-        'HOST': get_env('HOST'),
-        'PORT': get_env('PORT'),
+        'NAME': os.getenv('DBNAME'),
+        'USER': os.getenv('USERDB'),
+        'PASSWORD': os.getenv('PASSWORD'),
+        'HOST': os.getenv('HOST'),
+        'PORT': os.getenv('PORT'),
         'OPTIONS': {
         'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
         },
@@ -134,4 +143,4 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #Avisamos al framework que utilizaremos nuestro modelo de usuario para autenticarse
-AUTH_USER_MODEL = 'unidades.User'
+AUTH_USER_MODEL = 'usuarios.User'

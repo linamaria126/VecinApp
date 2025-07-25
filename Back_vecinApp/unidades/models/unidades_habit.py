@@ -10,8 +10,8 @@ class Unidad_habit(models.Model):
     created_at      = models.DateTimeField(auto_now_add=True)
     updated_at      = models.DateTimeField(auto_now=True, null=True)
     delete          = models.BooleanField(default=False)
-    unidad          = models.ForeignKey(Unidad, on_delete=models.PROTECT, null=True )
-    division        = models.ForeignKey(Division, on_delete=models.PROTECT, null=True )
+    unidad          = models.ForeignKey(Unidad, on_delete=models.SET_NULL, null=True)
+    division        = models.ForeignKey(Division, on_delete=models.SET_NULL, null=True)
 
 
     def __str__(self):
