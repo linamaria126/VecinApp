@@ -9,9 +9,13 @@ from .models.unidades_habit import Unidad_habit
 
 admin.site.register(Unidad)
 
-admin.site.register(Division)
-
 admin.site.register(Unidad_habit)
+
+@admin.register(Division)
+class DivisionAdmin(admin.ModelAdmin):
+    def save_model(self, request, obj, form, change):
+        # Esto evita que el admin cree duplicados
+        obj.save()
 
 
 

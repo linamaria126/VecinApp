@@ -16,7 +16,7 @@ class Documento(models.Model):
     )
      numero_dcto = models.CharField(max_length=20, primary_key=True, unique=True, verbose_name='Número de documento')
      tipo_dcto   = models.CharField(max_length=4, choices=TIPO_DCTO_CHOICES)
-     delete      = models.BooleanField(default=False)
+     is_delete    = models.BooleanField(default=False)
 
      
         
@@ -30,18 +30,19 @@ class User(AbstractUser):
     TIPO_USER = (
         ('A', 'administrador'),
         ('I', 'inquilino'),
-        ('P', 'proprietario'),
+        ('P', 'propietario'),
     )
-    email           = models.EmailField(unique=True)
+    email           = models.EmailField(max_length=254, unique=True)
     tipo_user       = models.CharField(max_length=45, choices=TIPO_USER, null=False, default='A')
     telefono        = models.CharField(max_length=45, null=True, blank=True)
-    created_at      = models.DateTimeField(auto_now=True)
-    update_at       = models.DateTimeField(auto_now=True)
+    created_at      = models.DateTimeField(auto_now=True, editable=False)
+    update_at       = models.DateTimeField(auto_now=True, editable=False)
     deleted_at      = models.DateTimeField(auto_now=True, null=True, blank=True)
     unidad          = models.ForeignKey(Unidad, on_delete=models.SET_NULL, null=True )
     unidad_habit    = models.ForeignKey(Unidad_habit, on_delete=models.SET_NULL, null=True)
     documento       = models.ForeignKey(Documento, on_delete=models.PROTECT, null=True)
-    delete          = models.BooleanField(default=False)
+    is_deleted      = models.BooleanField(default=False)
+    is_active       = models.BooleanField(default=True)
 
 
     #comentar en caso de requerir crear más superusuarios

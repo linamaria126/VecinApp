@@ -8,7 +8,7 @@ class Reserva(models.Model):
     unidad = models.ForeignKey(Unidad, on_delete=models.CASCADE)
     fecha_reserva = models.DateTimeField()
     fecha_creacion = models.DateTimeField(auto_now_add=True)
-    delete      = models.BooleanField(default=False)
+    is_delete      = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'Reserva'

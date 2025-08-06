@@ -19,7 +19,8 @@ class Unidad(models.Model):
     link_registro       = models.CharField(max_length=200)
     created_at  = models.DateTimeField(auto_now_add=True)
     updated_at  = models.DateTimeField(auto_now=True, null=True)
-    delete      = models.BooleanField(default=False)
+    is_active   = models.BooleanField(default=True)
+    is_delete      = models.BooleanField(default=False)
 
     
     # class Meta:

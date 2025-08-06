@@ -11,7 +11,7 @@ class Vehiculo(models.Model):
     color       = models.CharField(max_length=50, null=True, blank=True)
     created_at  = models.DateTimeField(auto_now_add=True)
     updated_at  = models.DateTimeField(auto_now=True, null=True)
-    delete      = models.BooleanField(default=False)
+    is_delete      = models.BooleanField(default=False)
     unidad_habit= models.ForeignKey(Unidad_habit, on_delete=models.SET_NULL, null=True)
     parqueadero = models.ForeignKey(Parqueadero, on_delete=models.SET_NULL, null=True)
 

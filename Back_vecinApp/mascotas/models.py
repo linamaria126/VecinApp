@@ -17,5 +17,5 @@ class Mascota(models.Model):
     raza = models.CharField(max_length=50)
     created_at  = models.DateTimeField(auto_now_add=True)
     updated_at  = models.DateTimeField(auto_now=True, null=True)
-    delete      = models.BooleanField(default=False)
+    is_delete      = models.BooleanField(default=False)
     Unidad_habit = models.ForeignKey(Unidad_habit, on_delete=models.CASCADE)

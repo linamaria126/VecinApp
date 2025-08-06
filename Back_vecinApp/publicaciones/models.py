@@ -7,7 +7,7 @@ class Publicacion(models.Model):
     contenido = models.TextField()
     fecha_publicacion = models.DateTimeField(auto_now_add=True)
     autor = models.ForeignKey(User, on_delete=models.CASCADE)
-    delete      = models.BooleanField(default=False)
+    is_delete      = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'Publicación'
