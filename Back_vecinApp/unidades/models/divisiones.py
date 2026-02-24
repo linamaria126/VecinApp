@@ -1,102 +1,137 @@
 from django.db import models
-from django.core.exceptions import ValidationError
-from django.utils.translation import gettext_lazy as _
-from django.db import transaction
 from .unidades import Unidad
+from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
+from django.core.exceptions import ValidationError
+
 
 
 # Create your models here.
 class Division(models.Model):
-    id              = models.CharField(max_length=50, 
-                                       primary_key=True,
-                                       editable=False,
-                                       help_text='Formado por: [ID Unidad]-[ID División]')
-    nombre_division = models.CharField(max_length=50,
-                                       default='Torre',
-                                       help_text='Tipo de agrupación arquitectónica (ej: Torre, Edificio, Manzana). Mantenga consistencia en la nomenclatura para todo el conjunto residencial.')
-    numero_division = models.CharField(max_length=5,
-                                       default='1', 
-                                       help_text='Número, letra, o clasificación de la división dentro de la unidad (ej: 1, 2, 3 ó A, B, C). Mantenga consistencia en la nomenclatura para todo el conjunto residencial.')
-    cant_pisos      = models.IntegerField(null=True)
-    created_at      = models.DateTimeField(auto_now_add=True)
-    updated_at      = models.DateTimeField(auto_now=True, null=True)
-    updated_at      = models.DateTimeField(auto_now=True, null=True)
-    is_delete       = models.BooleanField(default=False)
-    unidad          = models.ForeignKey(Unidad, on_delete=models.SET_NULL, null=True)
 
+    TIPO_DIVISION_CHOICES = [
+        ('TORRE', 'Torre'),
+        ('EDIFICIO', 'Edificio'),
+        ('MANZANA', 'Manzana'),
+        ('BLOQUE', 'Bloque'),
+        ('ETAPA', 'Etapa'),
+        ('SECTOR', 'Sector'),
+        ('ZONA', 'Zona'),
+        ('LOTE', 'Lote'),
+    ]
+
+   
+    unidad = models.ForeignKey(
+        Unidad, 
+        on_delete=models.CASCADE,
+        null=True,
+        related_name='divisiones',
+        verbose_name='Unidad Residencial',
+        help_text='Unidad residencial a la que pertenece esta división.'
+    )
+
+    tipo_division = models.CharField(
+        max_length=20,
+        choices=TIPO_DIVISION_CHOICES,
+        default='TORRE',
+        verbose_name='Tipo de División',
+        help_text='Tipo de agrupación arquitectónica (ej: Torre, Edificio, Manzana). Mantenga consistencia en la nomenclatura para todo el conjunto residencial.'
+    )
+
+    identificador = models.CharField(
+        max_length=10,
+        verbose_name='Identificador único',
+        help_text='Letra/numero que identifica la división (ej: 1, 2, A, B, ). Mantenga consistencia en la nomenclatura para todo el conjunto residencial.',
+        validators=[
+            RegexValidator(
+                regex='^[a-zA-Z0-9]+$',
+                message='Solo se permiten caracteres alfanuméricos (letras y números).'
+            )
+        ],
+        default='1',
+    )
+
+    nombre = models.CharField(
+        max_length=100,
+        editable=False, # No editable para evitar cambios manuales
+        verbose_name='Nombre completo de la División',
+        default='',
+        help_text='Nombre o número de la división dentro de la unidad (ej: Torre A, Edificio 1, Manzana B). Mantenga consistencia en la nomenclatura para todo el conjunto residencial.'
+    )
+
+    cantidad_pisos = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        verbose_name='Cantidad de Pisos',
+        validators=[MinValueValidator(1), MaxValueValidator(150)],
+        help_text='Cantidad de pisos que tiene la división. Obligatorio para Torres y Edificios.'
+    )
+
+    created_at      = models.DateTimeField(auto_now_add=True,
+                                           verbose_name='Fecha de creación')
+    
+    updated_at      = models.DateTimeField(auto_now=True, 
+                                           null=True, 
+                                           verbose_name='Última actualización')
+    
+    is_active       = models.BooleanField(default=True)
+    
+    deleted_at        = models.DateTimeField(null=True, 
+                                           blank=True,
+                                           verbose_name='Fecha de eliminación',
+                                           help_text='Fecha y hora en que el registro fue eliminado')
+
+
+    class Meta:
+        db_table = 'divisiones'
+        verbose_name = 'Division'
+        verbose_name_plural = 'Divisiones'
+        ordering = ['unidad', 'nombre']
+        
+        constraints = [
+            models.UniqueConstraint(
+                fields=['unidad', 'nombre'],
+                name='unique_nombre_por_unidad'
+            )
+        ]
+
+    def __str__(self):
+        return self.nombre
+    
+
+    #Validaciones:
 
     def clean(self):
         # 1. Ejecuta validaciones básicas de Django
-        super().clean()  # Valida tipos de datos, max_length, etc.
+        super().clean()  # Valida tipos de datos, max_length, etc.  
 
         # 2. Validaciones personalizadas
-        errors = {}
-
-        if not self.nombre_division:
-            errors['nombre_division'] = _('Este campo es requerido')
+        if not self.identificador.isalnum():
+            raise ValidationError({'identificador': 'Solo se permiten letras y números sin espacios'})
         
-        if not self.numero_division:
-            errors['numero_division'] = _('Este campo es requerido')
-        elif not self.numero_division.isalnum():
-            errors['numero_division'] = _('Solo se permiten caracteres alfanuméricos')
-
-        if self.cant_pisos is not None and self.cant_pisos < 0:
-            errors['cant_pisos'] = _('No puede ser negativo')
-
-        if self.unidad and not self.unidad.is_active:
-            errors['unidad'] = _('La unidad residencial no está activa')
-
-        # Validación de unicidad 
-        if self.numero_division and self.unidad:
-            queryset = Division.objects.filter(
-                unidad=self.unidad,
-                numero_division__iexact=self.numero_division,  # Case insensitive
-                is_delete=False
-            ).exclude(pk=self.pk)
-            
-            if queryset.exists():
-                errors['numero_division'] = _('Ya existe %(nombre)s %(numero)s en esta unidad') % {
-                    'nombre': self.nombre_division.lower(),
-                    'numero': self.numero_division
-                }
-
-        if errors:
-            raise ValidationError(errors)
+        # Validar coherencia para torres/edificios
+        if self.tipo_division in ['TORRE', 'EDIFICIO'] and not self.cantidad_pisos:
+            raise ValidationError({'cantidad_pisos': 'Debe especificar la cantidad de pisos para torres o edificios.'})
         
-
+        
     def save(self, *args, **kwargs):
-        with transaction.atomic(): #Valida antes de  guardar
-        # Generar id compuesto
-            unidad_id = str(self.unidad.id) if self.unidad else '00'
-            nombre_division = self.nombre_division if self.nombre_division else '00'
-            numero_division = self.numero_division if self.numero_division else '00'
             
-            nuevo_id = f"{unidad_id}-{nombre_division}-{numero_division}"
-            
-            if self.pk and self.id != nuevo_id:
-                # Elimina el registro antiguo
-                Division.objects.filter(pk=self.pk).delete()
-                # Crea uno nuevo con el nuevo ID
-                self.pk = None
-                self.id = nuevo_id
-                kwargs['force_insert'] = True  # Forzar creación como nuevo registro
-        
-            # Si es nuevo registro o el ID no cambia
-            else:
-                self.id = nuevo_id
+        #Construir nombre: "Tipo + Identificador"(ej: Torre A)
+        self.nombre = f"{self.get_tipo_division_display()} {self.identificador}"
 
+        self.full_clean()  # Ejecuta validaciones personalizadas
+
+        # Llama al método save de la clase padre
         super().save(*args, **kwargs)
 
-
-    def __str__(self):
-        return f"{self.id}"
     
     @property
-    def cant_unidades_habit(self):
-        return self.unidadhabitacional_set.count()
+    def cantidad_unidades_habitacionales(self):
+        return self.unidades_habitacionales.count()
     
-    class Meta:
-        db_table = 'division'
-        verbose_name = 'Division'
-        verbose_name_plural = 'Divisiones'
-        ordering = ['id']
+    @property
+    def nombre_corto(self):
+        """Versión compacta del nombre (ej: 'T-1')"""
+        return f"{self.tipo_division[0]}-{self.identificador}"
+    
+   
+        

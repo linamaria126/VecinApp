@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'corsheaders',
     'unidades',
     'vehiculos',
     'usuarios',
@@ -50,11 +52,14 @@ INSTALLED_APPS = [
     'mascotas',
     'parqueaderos',
     'publicaciones',
+    'zonas_sociales',
+    
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -144,3 +149,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #Avisamos al framework que utilizaremos nuestro modelo de usuario para autenticarse
 AUTH_USER_MODEL = 'usuarios.User'
+
+CORS_ALLOWED_ORIGINS = []
