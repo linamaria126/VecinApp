@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'drf_spectacular',
+    'drf_spectacular_sidecar', # para servir los archivos de swagger UI localmente
     'corsheaders',
     'unidades',
     'vehiculos',
@@ -149,5 +151,36 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #Avisamos al framework que utilizaremos nuestro modelo de usuario para autenticarse
 AUTH_USER_MODEL = 'usuarios.User'
+
+# =============================================================================
+# CONFIGURACIÓN DE DJANGO REST FRAMEWORK (DRF)
+# =============================================================================
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
+
+# =============================================================================
+# CONFIGURACIÓN DE DRF-SPECTACULAR (SWAGGER)
+# =============================================================================
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'VecinApp API',
+    'DESCRIPTION': 'API para la aplicación VecinApp',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+
+    'SWAGGER_UI_DIST': 'SIDECAR',  # Usa archivos locales
+    'SWAGGER_UI_FAVICON_HREF': 'SIDECAR',  # Icono local
+
+    'SWAGGER_UI_SETTINGS': {
+        'persistAuthorization': True,  # ¡Esto es ORO! Mantiene el token entre recargas
+        'displayOperationId': False,    # Manténlo False para no mostrar nombres internos
+    },
+}
 
 CORS_ALLOWED_ORIGINS = []
