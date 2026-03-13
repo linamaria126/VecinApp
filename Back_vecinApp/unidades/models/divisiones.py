@@ -62,7 +62,7 @@ class Division(models.Model):
         null=True,
         blank=True,
         verbose_name='Cantidad de Pisos',
-        validators=[MinValueValidator(1), MaxValueValidator(150)],
+        validators=[MinValueValidator(1), MaxValueValidator(40)],
         help_text='Cantidad de pisos que tiene la división. Obligatorio para Torres y Edificios.'
     )
 
