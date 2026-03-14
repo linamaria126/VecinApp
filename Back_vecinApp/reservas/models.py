@@ -23,7 +23,7 @@ class Reserva(models.Model):
     numero_personas = models.IntegerField(null=True, blank=True, verbose_name='Número de Personas')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at  = models.DateTimeField(auto_now=True, null=True)
-    is_delete      = models.BooleanField(default=False)
+    delete_at = models.DateTimeField(null=True, blank=True, verbose_name='Fecha de eliminación')
 
     class Meta:
         db_table = 'reservas_reserva'

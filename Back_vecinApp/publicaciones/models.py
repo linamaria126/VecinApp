@@ -34,7 +34,7 @@ class Publicacion(models.Model):
     telefono_informes = models.CharField(max_length=15,blank=True, null=True, help_text='Número de Teléfono para solicitar información adicional')
     email_informes = models.EmailField(blank=True, null=True, help_text='Email de para solicitar información adicional')
     whatsapp_informes = models.CharField(max_length=15, blank=True, null=True, help_text='Número de WhatsApp para solicitar información adicional')
-
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
     is_active = models.BooleanField(default=True, verbose_name='Activo')
     delete_at = models.DateTimeField(null=True, blank=True, verbose_name='Fecha de eliminación')
     updated_at = models.DateTimeField(auto_now=True, null=True)
