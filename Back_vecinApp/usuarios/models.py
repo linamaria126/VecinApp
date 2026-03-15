@@ -1,13 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
-from unidades.models.unidades import Unidad
+from unidades.models.unidades import Unidad, TimeStampedModel
 from unidades.models.unidades_habit import Unidad_habit
 
 #Create your models here.
 
 
-class User(AbstractUser):
+class User(AbstractUser, TimeStampedModel):
+    #AbstractUser ya incluye: username, password, first_name, last_name, email, is_staff, 
+    # is_active, date_joined, last_login
     
     TIPO_USER_CHOICES = (
         ('AD', 'administrador'),
@@ -52,23 +54,25 @@ class User(AbstractUser):
     
     #Información de contacto
     telefono        = models.CharField(max_length=45, validators=[telefono_validator], null=True, blank=True, verbose_name='Teléfono')
-    email           = models.EmailField(max_length=254, unique=True)
+    email           = models.EmailField(unique=True)
     
     tipo_user       = models.CharField(max_length=45, choices=TIPO_USER_CHOICES, null=False, default='A')
     unidad_residencial = models.ForeignKey(Unidad, on_delete=models.CASCADE, null=True, related_name='usuarios')
-    unidad_habit    = models.ForeignKey(Unidad_habit, on_delete=models.CASCADE, null=True, related_name='usuarios')
+    unidad_habit    = models.ForeignKey(Unidad_habit, on_delete=models.CASCADE, null=True, related_name='residentes')
     
-    created_at      = models.DateTimeField(auto_now=True, editable=False)
-    update_at       = models.DateTimeField(auto_now=True, editable=False)
-    is_active       = models.BooleanField(default=True)
-    deleted_at      = models.DateTimeField(null=True, blank=True,
-                                           verbose_name='Fecha de eliminación',
-                                           help_text='Fecha y hora en que el registro fue eliminado')
+    groups          = models.ManyToManyField('auth.Group', 
+                                             related_name='usuario_set', 
+                                             blank=True, 
+                                             related_query_name='usuario')
+    user_permissions = models.ManyToManyField('auth.Permission',
+                                              verbose_name='user permissions', 
+                                              related_name='usuario_set', 
+                                              blank=True)
 
     #comentar en caso de requerir crear más superusuarios
     #Las siguientes dos líneas son para que se emplee email y password para iniciar sesion (y no username)
-    #USERNAME_FIELD = 'email'
-    #REQUIRED_FIELDS = ['first_name', 'last_name']
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['first_name', 'last_name']
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
