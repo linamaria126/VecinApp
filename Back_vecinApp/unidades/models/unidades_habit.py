@@ -1,10 +1,10 @@
 from django.db import models
-from .unidades import Unidad
+from .unidades import Unidad, TimeStampedModel
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
 from .divisiones import Division
 
 # Create your models here.
-class Unidad_habit(models.Model):
+class Unidad_habit(TimeStampedModel):
 
     """Modelo que representa una unidad habitacional dentro de una unidad residencial.
     El ID se genera automáticamente combinando el piso, número y la división (ej: 401A).
@@ -73,19 +73,7 @@ class Unidad_habit(models.Model):
                                         related_name='unidades_habitacionales',
                                         help_text='División (ej: Torre, Edificio) dentro de la unidad residencial donde se encuentra esta unidad habitacional.')
     
-    created_at      = models.DateTimeField(auto_now_add=True,
-                                           verbose_name='Fecha de creación')
-    updated_at      = models.DateTimeField(auto_now=True, 
-                                           null=True,
-                                           verbose_name='Última actualización')
     
-    is_active       = models.BooleanField(default=True)
-
-    deleted_at        = models.DateTimeField(null=True, 
-                                           blank=True,
-                                           verbose_name='Fecha de eliminación',
-                                           help_text='Fecha y hora en que el registro fue eliminado')
-
     class Meta:
         db_table = 'unidades_habitacionales'
         verbose_name = 'Unidad Habitacional'
@@ -101,6 +89,7 @@ class Unidad_habit(models.Model):
 
 
     def save(self, *args, **kwargs):
+        # Generar el ID automáticamente combinando piso, número y división
         if not self.id:
             piso = self.piso if self.piso else '00'
             numero = self.numero if self.numero else '00'

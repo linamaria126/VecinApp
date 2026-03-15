@@ -1,12 +1,12 @@
 from django.db import models
-from .unidades import Unidad
+from .unidades import Unidad, TimeStampedModel
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
 
 
 
 # Create your models here.
-class Division(models.Model):
+class Division(TimeStampedModel):
 
     TIPO_DIVISION_CHOICES = [
         ('TORRE', 'Torre'),
@@ -66,19 +66,7 @@ class Division(models.Model):
         help_text='Cantidad de pisos que tiene la división. Obligatorio para Torres y Edificios.'
     )
 
-    created_at      = models.DateTimeField(auto_now_add=True,
-                                           verbose_name='Fecha de creación')
     
-    updated_at      = models.DateTimeField(auto_now=True, 
-                                           null=True, 
-                                           verbose_name='Última actualización')
-    
-    is_active       = models.BooleanField(default=True)
-    
-    deleted_at        = models.DateTimeField(null=True, 
-                                           blank=True,
-                                           verbose_name='Fecha de eliminación',
-                                           help_text='Fecha y hora en que el registro fue eliminado')
 
 
     class Meta:
