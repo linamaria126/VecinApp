@@ -1,10 +1,32 @@
+from datetime import  timezone
 from django.db import models
 from django.core.validators import  RegexValidator
 
 
 
-# Create your models here.
-class Unidad(models.Model):
+class TimeStampedModel(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Fecha de creación')
+    updated_at = models.DateTimeField(auto_now=True, null=True, verbose_name='Última actualización')
+    is_active = models.BooleanField(default=True)
+    deleted_at = models.DateTimeField(null=True, blank=True, verbose_name='Fecha de eliminación', help_text='Fecha y hora en que el registro fue eliminado')
+
+    def soft_delete(self):
+        """Método para eliminación lógica"""
+        self.is_active = False
+        self.deleted_at = timezone.now()  # Si usas deleted_at
+        self.save()
+
+    def activate(self):
+        """Método para reactivar la unidad"""
+        self.is_active = True
+        self.deleted_at = None  # Si usas deleted_at
+        self.save()
+
+    class Meta:
+        abstract = True
+
+
+class Unidad(TimeStampedModel):
    
     UNIDAD_HABITACIONAL_CHOICES = (
         ('A', 'Apartamento'),
@@ -12,7 +34,6 @@ class Unidad(models.Model):
         ('M', 'Mixto (Apartamentos y Casas)'),
         ('O', 'Otro'),
     )
-
 
 
     # Validaciones personalizadas
@@ -70,23 +91,7 @@ class Unidad(models.Model):
                                             blank=True, 
                                             help_text='Logo de la unidad residencial.')
     
-    created_at  = models.DateTimeField(auto_now_add=True, 
-                                       verbose_name='Fecha de creación')
-    
-    updated_at  = models.DateTimeField(auto_now=True, 
-                                       null=True, 
-                                       verbose_name='Última actualización')
-    
-    is_active   = models.BooleanField(default=True)
-    
-    deleted_at        = models.DateTimeField(null=True, 
-                                           blank=True,
-                                           verbose_name='Fecha de eliminación',
-                                           help_text='Fecha y hora en que el registro fue eliminado')
-
-    
-    
-  
+   
 
     def __str__(self):
         return self.nombre
@@ -102,14 +107,5 @@ class Unidad(models.Model):
             models.Index(fields=['is_active']),
         ]
 
-    def soft_delete(self):
-        """Método para eliminación lógica"""
-        self.is_active = False
-        # self.deleted_at = timezone.now()  # Si usas deleted_at
-        self.save()
 
-    def activate(self):
-        """Método para reactivar la unidad"""
-        self.is_active = True
-        # self.deleted_at = None  # Si usas deleted_at
-        self.save()
+    
