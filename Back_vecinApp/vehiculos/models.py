@@ -2,11 +2,12 @@ from django.db import models
 from django.core.validators import RegexValidator
 from unidades.models import Unidad_habit
 from parqueaderos.models import Parqueadero
+from unidades.models.unidades import TimeStampedModel
 
 
 
 # Create your models here.
-class Vehiculo(models.Model):
+class Vehiculo(TimeStampedModel):
               
         
 
@@ -39,13 +40,7 @@ class Vehiculo(models.Model):
         color       = models.CharField(max_length=50, null=True, blank=True)
         unidad_habit    = models.ForeignKey(Unidad_habit, on_delete=models.SET_NULL, null=True, related_name='vehiculos')
         parqueadero_id  = models.ForeignKey(Parqueadero, on_delete=models.SET_NULL, null=True, related_name='vehiculos', blank=True)
-        created_at  = models.DateTimeField(auto_now_add=True)
-        updated_at  = models.DateTimeField(auto_now=True, null=True)
-        deleted_at      = models.DateTimeField(null=True, blank=True,
-                                           verbose_name='Fecha de eliminación',
-                                           help_text='Fecha y hora en que el registro fue eliminado')
-
-
+        
 
 
         def __str__(self):
