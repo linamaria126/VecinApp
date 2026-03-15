@@ -132,7 +132,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-co'
 
 TIME_ZONE = 'America/Bogota'
 
@@ -167,12 +167,21 @@ REST_FRAMEWORK = {
     ],
 }
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",  # React con Vite
+    "http://127.0.0.1:5173",
+    "http://localhost:3000",  # React con Create React App
+    "http://127.0.0.1:3000",
+    "http://localhost:4200",  # Angular
+    "http://127.0.0.1:4200",
+]
+
 # =============================================================================
 # CONFIGURACIÓN DE DRF-SPECTACULAR (SWAGGER)
 # =============================================================================
 SPECTACULAR_SETTINGS = {
     'TITLE': 'VecinApp API',
-    'DESCRIPTION': 'API para la aplicación VecinApp',
+    'DESCRIPTION': 'API para la gestión de conjuntos Residenciales con la aplicación VecinApp',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
 
@@ -184,5 +193,3 @@ SPECTACULAR_SETTINGS = {
         'displayOperationId': False,    # Manténlo False para no mostrar nombres internos
     },
 }
-
-CORS_ALLOWED_ORIGINS = []
