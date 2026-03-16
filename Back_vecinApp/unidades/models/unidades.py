@@ -5,7 +5,7 @@ from django.core.validators import  RegexValidator
 
 
 class TimeStampedModel(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Fecha de creación')
+    created_at = models.DateTimeField(verbose_name='Fecha de creación', default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True, null=True, verbose_name='Última actualización')
     is_active = models.BooleanField(default=True)
     deleted_at = models.DateTimeField(null=True, blank=True, verbose_name='Fecha de eliminación', help_text='Fecha y hora en que el registro fue eliminado')

@@ -38,7 +38,7 @@ class Vehiculo(TimeStampedModel):
 
         marca       = models.CharField(max_length=50, null=True, blank=True)
         color       = models.CharField(max_length=50, null=True, blank=True)
-        unidad_habit    = models.ForeignKey(Unidad_habit, on_delete=models.SET_NULL, null=True, related_name='vehiculos')
+        unidad_habit    = models.ForeignKey(Unidad_habit, on_delete=models.CASCADE, null=True, related_name='vehiculos')
         parqueadero_id  = models.ForeignKey(Parqueadero, on_delete=models.SET_NULL, null=True, related_name='vehiculos', blank=True)
         
 

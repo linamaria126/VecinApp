@@ -1,9 +1,9 @@
 from django.db import models
-from unidades.models.unidades import Unidad
+from unidades.models.unidades import Unidad, TimeStampedModel
 
 # Create your models here.
 
-class Zona_social(models.Model):
+class Zona_social(TimeStampedModel):
     TIPO_ZONA_CHOICES = (
         ('G', 'Gimnasio'),
         ('SS', 'Salón Social'),
@@ -19,12 +19,8 @@ class Zona_social(models.Model):
     descripcion = models.TextField(blank=True, null=True)
     capacidad = models.IntegerField(blank=True, null=True)
     unidad_residencial = models.ForeignKey(Unidad, on_delete=models.CASCADE, verbose_name='Unidad Residencial', null=True, related_name='zonas_sociales')
-    horario_disponible = models.CharField(max_length=100, blank=True, null=True)
-    created_at  = models.DateTimeField(auto_now_add=True)
-    updated_at  = models.DateTimeField(auto_now=True, null=True)
-    is_active    = models.BooleanField(default=True)
-    deleted_at  = models.DateTimeField(null=True, blank=True, verbose_name='Fecha de eliminación')
-
+    horario_disponible = models.CharField(max_length=100, blank=True, null=True, help_text="Ej: Lunes a Viernes 8am-8pm")
+    
     
     def __str__(self):
         return f"{self.nombre} - {self.unidad_residencial}"

@@ -77,6 +77,12 @@ class User(AbstractUser, TimeStampedModel):
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
     
+    def save(self, *args, **kwargs):
+        # Si no se proporciona username, usar el email
+        if not self.username:
+            self.username = self.email
+        super().save(*args, **kwargs)
+    
     class Meta:
         db_table = 'usuarios'
         verbose_name = 'Usuario'
