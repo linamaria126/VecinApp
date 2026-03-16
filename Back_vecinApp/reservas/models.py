@@ -1,18 +1,19 @@
 from django.db import models
-from usuarios.models import User
-from unidades.models import Unidad
+from django.conf import settings
+from unidades.models.unidades import Unidad, TimeStampedModel
 from zonas_sociales.models import Zona_social
 from unidades.models.unidades_habit import Unidad_habit
+from django.core.validators import MinValueValidator
 
 # Create your models here.
-class Reserva(models.Model):
+class Reserva(TimeStampedModel):
     ESTADO_CHOICES = [
         ('P', 'Pendiente'),
         ('A', 'Aprobada'),
         ('R', 'Rechazada'),
         ('C', 'Cancelada'),
     ]
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
     unidad_residencial = models.ForeignKey(Unidad, on_delete=models.CASCADE, null=True, related_name='reservas')
     zona_social = models.ForeignKey(Zona_social, on_delete=models.CASCADE, null=True, related_name='reservas')
     unidad_habit = models.ForeignKey(Unidad_habit, on_delete=models.CASCADE, null=True, related_name='reservas')
@@ -20,10 +21,8 @@ class Reserva(models.Model):
     motivo = models.TextField(blank=True, null=True, verbose_name='Motivo de Reserva')
     inicio_reserva = models.DateTimeField(null=True, blank=True)
     fin_reserva = models.DateTimeField(null=True, blank=True)
-    numero_personas = models.IntegerField(null=True, blank=True, verbose_name='Número de Personas')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at  = models.DateTimeField(auto_now=True, null=True)
-    is_delete      = models.BooleanField(default=False)
+    numero_personas = models.IntegerField(null=True, blank=True, verbose_name='Número de Personas',validators=[MinValueValidator(1)])
+    
 
     class Meta:
         db_table = 'reservas_reserva'

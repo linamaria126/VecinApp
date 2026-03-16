@@ -1,9 +1,10 @@
 from django.db import models
+from unidades.models.unidades import TimeStampedModel
 from unidades.models.unidades_habit import Unidad_habit
 
 # Create your models here.
 
-class Mascota(models.Model):
+class Mascota(TimeStampedModel):
 
 
     TIPO_MASC_CHOICES = (
@@ -34,10 +35,6 @@ class Mascota(models.Model):
         help_text='Foto de la mascota'
     )
     unidad_habit = models.ForeignKey(Unidad_habit, on_delete=models.CASCADE, null=True, related_name='mascotas')
-    created_at  = models.DateTimeField(auto_now_add=True)
-    updated_at  = models.DateTimeField(auto_now=True, null=True)
-    is_active    = models.BooleanField(default=True)
-    deleted_at  = models.DateTimeField(null=True, blank=True, verbose_name='Fecha de eliminación')
     
 
     class Meta:
