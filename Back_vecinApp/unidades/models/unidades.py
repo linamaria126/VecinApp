@@ -38,8 +38,8 @@ class Unidad(TimeStampedModel):
 
     # Validaciones personalizadas
     nit_validator = RegexValidator(
-        regex=r'^[0-9]{9}-[0-9]$',
-        message='El NIT debe tener el formato: 123456789-0'
+        regex=r'^\d{8,10}-\d$',
+        message='El NIT debe tener el formato: 123456789-0 (8-10 dígitos, guión, dígito de verificación)'
     )
 
     telefono_validator = RegexValidator(
@@ -52,7 +52,7 @@ class Unidad(TimeStampedModel):
                                   verbose_name='Nombre de la unidad Residencial',
                                   help_text='Nombre oficial de la unidad residencial (ej: Conjunto Residencial Capriani)')
 
-    nit        = models.CharField(max_length=20, 
+    nit        = models.CharField(max_length=12, 
                                   validators=[nit_validator], 
                                   unique=True, 
                                   verbose_name='NIT')
