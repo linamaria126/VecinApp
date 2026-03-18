@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'rest_framework.authtoken',
     'drf_spectacular',
     'drf_spectacular_sidecar', # para servir los archivos de swagger UI localmente
     'corsheaders',
@@ -192,4 +193,18 @@ SPECTACULAR_SETTINGS = {
         'persistAuthorization': True,  # ¡Esto es ORO! Mantiene el token entre recargas
         'displayOperationId': False,    # Manténlo False para no mostrar nombres internos
     },
+
+    'SERVE_PERMISSIONS': ['rest_framework.permissions.AllowAny'],
+    'SERVE_AUTHENTICATION': [],  # Sin autenticación para ver la documentación
+
+     'SECURITY_DEFINITIONS': {
+        'Token': {  # Para TokenAuthentication
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header',
+            'description': 'Formato: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b'
+        },
+    },
+    'SECURITY': [{'Token': []}],
+
 }
