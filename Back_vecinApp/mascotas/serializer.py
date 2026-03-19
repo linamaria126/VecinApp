@@ -3,6 +3,7 @@ from .models import Mascota
 
 
 
+
 class MascotaSerializer(serializers.ModelSerializer):
     unidad_habit_info = serializers.SerializerMethodField()
 
@@ -11,9 +12,8 @@ class MascotaSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['id', 'created_at', 'updated_at']  # Campos de solo lectura
 
-        def get_unidad_habit_info(self, obj):
-            return {
-                'id': obj.unidad_habit.id,
-                'nombre': obj.unidad_habit.nombre,
-                'direccion': obj.unidad_habit.direccion
-            }
+    def get_unidad_habit_info(self, obj):
+        return {
+            'id': obj.unidad_habit.id,
+            'unidad': obj.unidad_habit.unidad.nombre if obj.unidad_habit.unidad else None,
+        }
