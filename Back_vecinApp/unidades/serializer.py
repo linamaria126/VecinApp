@@ -35,6 +35,8 @@ class DivisionSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['id', 'created_at', 'updated_at']  # Campos de solo lectura
 
+   
+
     def get_unidad_residencial(self, obj):
         return obj.unidad.nombre if obj.unidad else None  # Retorna el nombre de la unidad residencial o None si no existe
 
