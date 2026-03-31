@@ -1,7 +1,7 @@
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 from .models import Vehiculo
-from parqueaderos.models import Parqueadero
+
 
 class VehiculoSerializer(serializers.ModelSerializer):
     parqueadero_info = serializers.SerializerMethodField()
