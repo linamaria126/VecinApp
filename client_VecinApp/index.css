@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+/* Configuración personalizada */
+@theme {
+  /* Colores */
+  --color-primary: #3B82F6;
+  --color-secondary: #10B981;
+  --color-gray-light: #F3F4F6;
+  --color-gray-dark: #1F2937;
+  
+  /* Tipografía */
+  --font-sans: "Inter", system-ui, sans-serif;
+  
+  /* Breakpoints */
+  --breakpoint-mobile: 375px;
+  --breakpoint-tablet: 768px;
+  --breakpoint-desktop: 1024px;
+}
+
+/* Modo oscuro manual (class strategy) */
+.dark {
+  --color-gray-light: #1F2937;
+  --color-gray-dark: #F3F4F6;
+}
+
+/* Estilos base */
+@layer base {
+  body {
+    background-color: var(--color-gray-light);
+    color: var(--color-gray-dark);
+    font-family: var(--font-sans);
+  }
+}
+
+/* Componentes personalizados */
+@layer components {
+  .container-custom {
+    width: 100%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 1280px;
+  }
+}
