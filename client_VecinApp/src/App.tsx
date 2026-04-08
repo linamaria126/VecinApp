@@ -1,3 +1,5 @@
+import { TestButton } from "@/components/TestButton";
+
 function App() {
   return (
     <div className="min-h-screen bg-grayLight dark:bg-grayDark">
@@ -6,9 +8,7 @@ function App() {
         <p className="text-grayDark dark:text-grayLight">
           Configuración inicial completada ✅
         </p>
-        <button className="mt-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-opacity-90 transition-all">
-          Botón de prueba
-        </button>
+        <TestButton />
       </div>
     </div>
   );
